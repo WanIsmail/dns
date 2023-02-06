@@ -1,11 +1,18 @@
 Source: https://www.cloudflare.com/learning/dns/dns-records/protect-domains-without-email/
 
+Record preview
+Type  Name           Content                                           TTL
+TXT   example.com    v=spf1 -all                                       Auto 
+TXT   *._domainkey   v=DKIM1; p=                                       Auto
+TXT   _dmarc         v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s;   Auto
+
+
 SPF
 ---
 SPF records can be formatted to protect domains against attempted phishing attacks by rejecting any emails sent from the domain. To do so, an SPF record must use the following format.
 
-Name                      Type  Content
-@                         TXT   v=spf1 -all
+Type Name            Content        TTL
+TXT  example.com     v=spf1 -all    Auto
 
 
 *Note, SPF records are set directly on the domain itself, meaning they do not require a special subdomain.
@@ -21,8 +28,8 @@ DKIM
 ----
 DKIM records protect domains by ensuring emails were actually authorized by the sender using a public key and a private key. DKIM records store the public key that the email server then uses to authenticate that the email signature was authorized by the sender. For domains that do not send emails, the DKIM record should be configured without an associated public key. Below is an example:
 
-Name                      Type  Content
-*._domainkey.example.com	TXT   v=DKIM1; p=
+Type Name                      Content        TTL
+TXT  *._domainkey.example.com	 v=DKIM1; p=    Auto
 
 *._domainkey.example.com is the specialized name for the DKIM record (where “example.com” should be replaced with your domain). In this example, the asterisk (referred to as the wildcard) is being used as the selector, which is a specialized value that the email service provider generates and uses for the domain. The selector is part of the DKIM header and the email server uses it to perform the DKIM lookup in the DNS. The wildcard covers all possible values for the selector.
 TXT indicates the DNS record type.
@@ -34,8 +41,8 @@ DMARC
 -----
 DMARC policies can also help protect domains that do not send emails by rejecting all emails that fail SPF and DKIM. In this case, all emails sent from a domain not configured to send emails would fail SPF and DKIM checks. Below is an example of how to format a policy this way:
 
-Name                      Type  Content
-_dmarc.example.com        TXT   v=DMARC1;p=reject;sp=reject;adkim=s;aspf=s
+Type Name                Content                                      TTL
+TXT  _dmarc.example.com  v=DMARC1;p=reject;sp=reject;adkim=s;aspf=s   Auto
 
 The name field ensures that the record is set on the subdomain called _dmarc.example.com, which is required for DMARC policies.
 TXT indicates the DNS record type.
